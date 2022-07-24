@@ -1,0 +1,46 @@
+import { useState, useReducer } from "react";
+
+/*
+  useState
+  1. init state: 0
+  2. actions: up/down
+
+  useReducer: Cung cấp cho người dùng có thêm một sự lựa chọn để sử dụng state cho function component
+  1. init state: 0
+  2. actions: up/down
+  3. reducer
+  4. dispatch
+*/
+
+// init state
+const initState = 0;
+
+// actions
+const UP = "up";
+const DOWN = "down";
+
+// reducer
+const reducer = (state, action) => {
+  switch (action) {
+    case UP:
+      return state + 1;
+    case DOWN:
+      return state - 1;
+    default:
+      throw new Error(`Invalid action ${action}`);
+  }
+};
+
+function App() {
+  const [count, dispatch] = useReducer(reducer, initState);
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>{count}</h1>
+      <button onClick={() => dispatch(UP)}>Down</button>
+      <button onClick={() => dispatch(DOWN)}>Up</button>
+    </div>
+  );
+}
+
+export default App;

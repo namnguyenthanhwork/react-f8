@@ -1,0 +1,119 @@
+import { useState, useReducer, useRef } from "react";
+
+/*
+  useState
+  1. init state: 0
+  2. actions: up/down
+
+  useReducer: Cung cấp cho người dùng có thêm một sự lựa chọn để sử dụng state cho function component
+  1. init state
+  2. actions: up/down
+  3. reducer: xử lý
+  4. dispatch: kích hoạt 1 action
+*/
+// init state
+const intiState = {
+  job: "",
+  jobs: [],
+};
+// actions
+const SET_JOB = "set_job";
+const ADD_JOB = "add_job";
+const REMOVE_JOB = "remove_job";
+
+const setJob = (payload) => {
+  return {
+    type: SET_JOB,
+    payload,
+  };
+};
+const addJob = (payload) => {
+  return {
+    type: ADD_JOB,
+    payload,
+  };
+};
+const removeJob = (payload) => {
+  return {
+    type: REMOVE_JOB,
+    payload,
+  };
+};
+
+//reducer
+const reducer = (state, action) => {
+  console.log("action:", action);
+  console.log("prev state:", state);
+
+  let newState;
+  switch (action.type) {
+    case SET_JOB:
+      newState = {
+        ...state,
+        job: action.payload,
+      };
+      break;
+    case ADD_JOB:
+      newState = {
+        ...state,
+        jobs: [...state.jobs, action.payload],
+      };
+      break;
+    case REMOVE_JOB:
+      const newJobs = [...state.jobs];
+      newJobs.splice(action.payload, 1);
+      newState = {
+        ...state,
+        jobs: newJobs,
+      };
+      break;
+    default:
+      throw new Error(`Invalid action`);
+  }
+  console.log("new state:", newState);
+
+  return newState;
+};
+// dispatch
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, intiState);
+  const inputRef = useRef();
+  const { job, jobs } = state;
+
+  const handleSubmit = () => {
+    dispatch(addJob(job));
+    dispatch(setJob(""));
+    inputRef.current.focus();
+  };
+  return (
+    <div style={{ padding: "20px" }}>
+      <h3>Todo</h3>
+      <input
+        ref={inputRef}
+        value={job}
+        placeholder="enter todo..."
+        onChange={(e) => {
+          dispatch(setJob(e.target.value));
+        }}
+      />
+      <button onClick={handleSubmit}>Add</button>
+      <ul>
+        {jobs.map((job, index) => (
+          <li key={index}>
+            {job}
+            <span
+              onClick={() => {
+                dispatch(removeJob(index));
+              }}
+            >
+              &times;
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;

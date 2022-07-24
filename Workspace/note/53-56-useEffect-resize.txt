@@ -1,0 +1,75 @@
+import { useEffect, useState } from "react";
+/*  
+    I. Update DOM (title)
+    II. Call API
+    III. Listen DOM events
+      - Scroll
+      - Resize
+    IV. Cleanup
+      - Remove listener/ Unsubcribe (Observer pattern)
+      - Clear timer (setInterval, setTimeout, clearInterval, clearTimeout)
+    1. useEffect(callback)
+      - gọi callback mỗi khi component re-render
+      - gọi callback sau khi component thêm element vào dom
+    2. useEffect(callback, [])
+      - chỉ gọi callback 1 lần sau khi component mounted
+    3. useEffect(callback, [dependences])
+      - callback được gọi lại sau khi dependences thay đổi
+----------------------------------------------------------------
+note bên dưới được áp dụng cho cả mục 1 2 3 ở bên trên
+    - callback luôn luôn được gọi sau khi compoment mounted
+    - cleanup function luôn được gọi trước khi component unmounted
+*/
+
+const tabs = ["posts", "photos", "albums"];
+
+function Content() {
+  // const [title, setTitle] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [type, setType] = useState("posts");
+  const [showGoToTop, setShowGoToTop] = useState(false);
+
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/${type}`)
+      .then((res) => res.json())
+      .then((posts) => {
+        setPosts(posts);
+      });
+  }, [type]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowGoToTop(window.scrollY >= 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    console.log("add event...");
+
+    // cleanup function
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      console.log("remove event...");
+    };
+  }, [type]);
+  return (
+    <div>
+      {tabs.map((tab) => (
+        <button
+          onClick={() => setType(tab)}
+          key={tab}
+          style={tab === type ? { color: "red" } : { color: "blue" }}
+        >
+          {tab}
+        </button>
+      ))}
+      {/* <input value={title} onChange={(e) => setTitle(e.target.value)} /> */}
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>{post.title}</li>
+        ))}
+      </ul>
+      {showGoToTop && <button className="btnFixed">go to top</button>}
+    </div>
+  );
+}
+
+export default Content;

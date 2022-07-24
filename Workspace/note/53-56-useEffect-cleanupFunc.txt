@@ -1,0 +1,64 @@
+import { useEffect, useState } from "react";
+/*  
+    I. Update DOM (title)
+    II. Call API
+    III. Listen DOM events
+      - Scroll
+      - Resize
+    IV. Cleanup
+      - Remove listener/ Unsubcribe (Observer pattern)
+      - Clear timer (setInterval, setTimeout, clearInterval, clearTimeout)
+    1. useEffect(callback)
+      - gọi callback mỗi khi component re-render
+      - gọi callback sau khi component thêm element vào dom
+    2. useEffect(callback, [])
+      - chỉ gọi callback 1 lần sau khi component mounted
+    3. useEffect(callback, [dependences])
+      - callback được gọi lại sau khi dependences thay đổi
+----------------------------------------------------------------
+note bên dưới được áp dụng cho cả mục 1 2 3 ở bên trên
+    - 1. callback luôn luôn được gọi sau khi compoment mounted
+    - 2. cleanup function luôn được gọi trước khi component unmounted
+    - 3. cleanup function luôn được gọi trước khi callback được gọi (trừ lần mounted đầu tiên)
+*/
+
+function Content() {
+  const [countdown, setCountdown] = useState(180);
+
+  // lỗi khi chạy (có liên quan đến khái niệm closure)
+  // useEffect chỉ chạy 1 lần, lúc này countdown = 180 (nó đang nằm trong phạm vi chỉ chạy 1 lần), setcountdown vẫn chạy nhưng chạy với count = 180
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     setCountdown(countdown - 1);
+  //     console.log(countdown);
+  //   }, 1000);
+  // }, []);
+
+  // cách 1: sử dụng callback, lấy nó sẽ k tham chiếu đến biến countdown nữa
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setCountdown((prevState) => prevState - 1);
+      console.log("coundown"); // vẫn chạy khi unmounted nếu k có return + clearInterval
+    }, 1000);
+
+    // để unmounted thì sử dụng clearTimeout + return, nếu k clear thì khi
+    // unmounted thì setInterval vẫn chạy
+    return () => clearTimeout(timerId);
+  }, []);
+
+  // cách 2: mỗi lần countdown đc set lại, nó sẽ re-render lại component
+  // countdown sẽ - 1, đem countdown vào deps để nó thực hiện lại
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setCountdown(countdown - 1);
+  //   }, 1000);
+  // }, [countdown]);
+
+  return (
+    <div>
+      <h1>{countdown}</h1>
+    </div>
+  );
+}
+
+export default Content;

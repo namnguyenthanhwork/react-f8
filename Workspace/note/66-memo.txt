@@ -1,0 +1,41 @@
+import { useState } from "react";
+
+import Content from "./Content";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  const increase = () => {
+    setCount(count + 1);
+  };
+  return (
+    <div style={{ padding: "20px" }}>
+      <Content count={count} />
+      <h1>{count}</h1>
+      <button onClick={increase}>Increase</button>
+    </div>
+  );
+}
+
+export default App;
+
+
+import { memo } from "react";
+/*  
+  memo
+  - 1. memo() -> higher order component (hoc) 
+  React.memo được gọi là Higher order component (HOC). Dùng để ghi nhớ các props của một component, quyết định xem có render lại component đó hay không để tối ưu về hiệu năng.
+
+  Ngắn gọn React.memo dùng để xử lý component tránh re-render trong tình huống không cần thiết.
+  - 2. useCallback()
+*/
+
+function Content({count}) {
+  return (
+    <div>
+      <h1>Content {count}</h1>
+    </div>
+  );
+}
+
+export default memo(Content);

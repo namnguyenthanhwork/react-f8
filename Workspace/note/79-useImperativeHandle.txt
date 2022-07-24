@@ -1,0 +1,26 @@
+import { useImperativeHandle } from "react";
+import Video from "./Video";
+import { useRef } from "react";
+
+/*
+  useImperativeHandle: giúp tuỳ chỉnh đc ref của 1 function component
+
+*/
+function App() {
+  const videoRef = useRef();
+  const handlePlay = () => {
+    videoRef.current.play();
+  };
+  const handlePause = () => {
+    videoRef.current.pause();
+  };
+  return (
+    <div style={{ padding: "20px" }}>
+      <Video ref={videoRef} />
+      <button onClick={handlePlay}>Play</button>
+      <button onClick={handlePause}>Pause</button>
+    </div>
+  );
+}
+
+export default App;

@@ -1,0 +1,26 @@
+// app.js
+import { useState } from "react";
+import Content from "./Content";
+
+function App() {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="App" style={{ padding: 20 }}>
+      <button onClick={() => setShow(!show)}>Toggle show/hide</button>
+      {show && <Content />}
+    </div>
+  );
+}
+
+export default App;
+
+
+// create content.js
+function Content() {
+    return (
+        <h1>hi</h1>
+    )
+}
+
+export default Content;

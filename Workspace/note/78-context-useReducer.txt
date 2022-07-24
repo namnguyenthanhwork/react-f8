@@ -1,0 +1,75 @@
+app.js
+
+
+import { useStore, actions } from "./store";
+import { useRef } from "react";
+
+function App() {
+  const [state, dispatch] = useStore();
+  const { todos, todoInput } = state;
+  const inputRef = useRef();
+
+  const handleAdd = () => {
+    dispatch(actions.addTodoInput(todoInput));
+    dispatch(actions.setTodoInput(""));
+    inputRef.current.focus();
+  };
+  const handleEdit = (index) => {
+    dispatch(actions.editTodo(index));
+    dispatch(actions.setTodoInput(""));
+    inputRef.current.focus();
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <input
+        ref={inputRef}
+        value={todoInput}
+        placeholder="Enter todo..."
+        onChange={(e) => {
+          dispatch(actions.setTodoInput(e.target.value));
+        }}
+      />
+      <button onClick={handleAdd}>Add</button>
+
+      {todos.map((todo, index) => (
+        <li key={index}>
+          {todo}
+          <button
+            onClick={() => {
+              dispatch(actions.removeTodo(index));
+            }}
+          >
+            &times;
+          </button>
+          <button onClick={() => handleEdit(index)}>edit</button>
+        </li>
+      ))}
+    </div>
+  );
+}
+
+export default App;
+
+
+index.js 
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { StoreProvider } from "./store";
+import reportWebVitals from "./reportWebVitals";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+  <StoreProvider>
+    <App />
+  </StoreProvider>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
