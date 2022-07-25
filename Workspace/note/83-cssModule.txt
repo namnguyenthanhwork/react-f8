@@ -1,0 +1,21 @@
+import "./App.css";
+import Heading from "./components/Heading";
+import Paragraph from "./components/Paragraph";
+import GlobalStyles from "./components/GlobalStyles";
+
+function App() {
+  return (
+    <GlobalStyles>
+      <div style={{ padding: "20px" }}>
+        <Heading />
+        <Paragraph />
+      </div>
+      <div className="d-flex">
+        <div>1</div>
+        <div>1</div>
+      </div>
+    </GlobalStyles>
+  );
+}
+
+export default App;
